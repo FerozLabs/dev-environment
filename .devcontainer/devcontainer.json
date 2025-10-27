@@ -1,0 +1,108 @@
+// For format details, see https://aka.ms/devcontainer.json. For config options, see the
+// README at: https://github.com/devcontainers/templates/tree/main/src/docker-existing-docker-compose
+{
+	"name": "Com Docker Compose Proprio - Dev",
+
+	// Update the 'dockerComposeFile' list if you have more compose files or use different names.
+	// The .devcontainer/docker-compose.yml file contains any overrides you need/want to make.
+	"dockerComposeFile": [
+		"../docker-compose.yaml"
+	],
+
+	// The 'service' property is the name of the service for the container that VS Code should
+	// use. Update this value and .devcontainer/docker-compose.yml to the real service name.
+	"service": "web1",
+
+	// The optional 'workspaceFolder' property is the path VS Code should open by default when
+	// connected. This is typically a file mount in .devcontainer/docker-compose.yml
+	"workspaceFolder": "/home/node/app",
+	"customizations": {
+		"vscode": {
+			"extensions": [
+				"ms-python.python",
+				"ms-toolsai.jupyter",
+				"ms-azuretools.vscode-docker",
+				"ms-vscode-remote.remote-containers",
+				"dracula-theme.theme-dracula",
+				"pomdtr.excalidraw-editor",
+				"GrapeCity.gc-excelviewer",
+				"mechatroner.rainbow-csv",
+				"mtxr.sqltools",
+				"regadas.sqltools-trino-driver",
+				"alexcvzz.vscode-sqlite"
+			],
+			"settings": {
+				"sqltools.connections": [
+					{
+						"trinoOptions": {
+							"ssl": {
+								"rejectUnauthorized": true
+							}
+						},
+						"previewLimit": 50,
+						"driver": "Trino Driver",
+						"name": "trino-dev",
+						"catalog": "iceberg",
+						"user": "admin",
+						"server": "http://localhost:8080"
+					},
+					{
+						"ssh": "Disabled",
+						"previewLimit": 50,
+						"server": "localhost",
+						"port": 5434,
+						"askForPassword": true,
+						"driver": "PostgreSQL",
+						"name": "pg-healthcare-db",
+						"database": "test",
+						"username": "test"
+					}
+				]
+			},
+			"keybindings": [
+				{
+					"key": "ctrl+shift+enter",
+					"command": "workbench.action.terminal.runSelectedText",
+					"when": "terminalProcessSupported && editorTextFocus && editorHasSelection"
+				},
+				{
+					"key": "ctrl+shift+enter",
+					"command": "sqltools.executeQuery",
+					"when": "editorHasSelection && editorTextFocus && !config.sqltools.disableChordKeybindings && editorLangId == 'sql'"
+				}
+			]
+		}
+	},
+	"features": {
+		"ghcr.io/devcontainers/features/common-utils:2": {
+		},
+		"ghcr.io/devcontainers/features/git:1": {
+		},
+		"ghcr.io/stuartleeks/dev-container-features/shell-history:0": {},
+		"ghcr.io/devcontainers-extra/features/zsh-plugins:0": {
+			"plugins": "git git-flow F-Sy-H zsh-autosuggestions zsh-completions",
+			"omzPlugins": "https://github.com/z-shell/F-Sy-H https://github.com/zsh-users/zsh-autosuggestions https://github.com/zsh-users/zsh-completions"
+		}
+	}
+
+	// Features to add to the dev container. More info: https://containers.dev/features.
+	// "features": {},
+
+	// Use 'forwardPorts' to make a list of ports inside the container available locally.
+	// "forwardPorts": [],
+
+	// Uncomment the next line if you want start specific services in your Docker Compose config.
+	//"runServices": ["web1", "web2", "db", "nginx", "phpmyadmin"]
+
+	// Uncomment the next line if you want to keep your containers running after VS Code shuts down.
+	// "shutdownAction": "none",
+
+	// Uncomment the next line to run commands after the container is created.
+	// "postCreateCommand": "cat /etc/os-release",
+
+	// Configure tool-specific properties.
+	// "customizations": {},
+
+	// Uncomment to connect as an existing user other than the container default. More info: https://aka.ms/dev-containers-non-root.
+	// "remoteUser": "devcontainer"
+}
