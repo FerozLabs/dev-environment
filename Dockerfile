@@ -1,47 +1,26 @@
-FROM node:22.8.0-slim
+FROM python:3.12-slim
 
-ARG NODEMON_VERSION=3.1.7
+# Install system dependencies
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    curl git build-essential && rm -rf /var/lib/apt/lists/*
 
-RUN apt update && \
-    apt install -y curl && \
-    npm install -g nodemon@${NODEMON_VERSION}
 
-# debian
-# RUN useradd -m -u 1000 xpto - criar um usuario
-# RUN usermod -u 1000 xpto
+# Install Poetry globally
+RUN pip install --no-cache-dir poetry
 
-#alpine
-#RUN adduser -D -u 1000 xpto - criar um usuario
-#RUN sed -i 's/1000/1001/g' /etc/passwd
+# Copy project files
+WORKDIR /app
+COPY pyproject.toml .
+COPY poetry.lock .
+COPY README.md . 
+COPY src src
 
-COPY docker-entrypoint.sh /
-RUN chmod +x /docker-entrypoint.sh
+# Install dependencies without dev packages
+RUN poetry install --without dev
 
-# estabelecendo um usuário não root
-# não existe um momento certo para estabelecer um usuário, mas porque os comandos abaixo
-# vão precisar de um usuário não root, porque senão, os arquivos criados vão pertencer ao root
-# criando problemas de permissão
-# Nesta imagem node já existe um usuário node, então vamos usá-lo
-# mas, em outras imagens, pode ser necessário criar um usuário não root
-USER node
+COPY . .
 
-# estabelecendo o diretório de trabalho
-# isto é importante, porque a partir de agora, todos os comandos vão ser executados neste diretório
-# quando entrar no container, vai estar neste diretório
-# se a pasta não existir, ele vai criar e pertenceria ao root
-WORKDIR /home/node/app
+# Use entrypoint
+ENTRYPOINT ["poetry", "run"]
 
-# copiando o package.json para o diretório de trabalho
-# o comando COPY é executado como root, então o arquivo copiado pertenceria ao root
-# mas, como estabelecemos um usuário não root, o arquivo copiado vai pertencer ao usuário node
-# o comando --chown=node:node faz com que o arquivo copiado pertença ao usuário node
-# a dupla COPY e RUN é uma técnica de cache, se o package.json não mudar, o cache é aproveitado
-# ou seja, está usado a node_modules do cache
-# COPY package.json ./
-# RUN npm install
-
-EXPOSE 3000
-
-#CMD ["tail", "-f", "/dev/null"]
-
-CMD ["/docker-entrypoint.sh"] 
+CMD ["python", "src/main.py"]

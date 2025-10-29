@@ -1,0 +1,26 @@
+executor: LocalExecutor
+
+webserver:
+  defaultUser:
+    username: admin
+    password: admin
+  service:
+    type: LoadBalancer
+
+postgresql:
+  enabled: true
+  postgresqlDatabase: airflow
+  postgresqlUsername: airflow
+  postgresqlPassword: airflow
+
+dags:
+  persistence:
+    enabled: true
+    size: 1Gi
+
+createUserJob:
+  useHelmHooks: false
+  applyCustomEnv: false
+migrateDatabaseJob:
+  useHelmHooks: false
+  applyCustomEnv: false

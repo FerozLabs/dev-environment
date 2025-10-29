@@ -1,7 +1,7 @@
 // For format details, see https://aka.ms/devcontainer.json. For config options, see the
 // README at: https://github.com/devcontainers/templates/tree/main/src/docker-existing-docker-compose
 {
-	"name": "Com Docker Compose Proprio - Dev",
+	"name": "Data Engineering Dev Container",
 
 	// Update the 'dockerComposeFile' list if you have more compose files or use different names.
 	// The .devcontainer/docker-compose.yml file contains any overrides you need/want to make.
@@ -11,11 +11,11 @@
 
 	// The 'service' property is the name of the service for the container that VS Code should
 	// use. Update this value and .devcontainer/docker-compose.yml to the real service name.
-	"service": "web1",
+	"service": "app",
 
 	// The optional 'workspaceFolder' property is the path VS Code should open by default when
 	// connected. This is typically a file mount in .devcontainer/docker-compose.yml
-	"workspaceFolder": "/home/node/app",
+	"workspaceFolder": "/app",
 	"customizations": {
 		"vscode": {
 			"extensions": [
@@ -29,7 +29,8 @@
 				"mechatroner.rainbow-csv",
 				"mtxr.sqltools",
 				"regadas.sqltools-trino-driver",
-				"alexcvzz.vscode-sqlite"
+				"alexcvzz.vscode-sqlite",
+				"mtxr.sqltools-driver-pg"
 			],
 			"settings": {
 				"sqltools.connections": [
@@ -76,20 +77,35 @@
 	"features": {
 		"ghcr.io/devcontainers/features/common-utils:2": {
 		},
+		"ghcr.io/devcontainers/features/node:1": {
+			"version": "20"
+		},
+		"ghcr.io/devcontainers/features/kubectl-helm-minikube:1": {},
+		"ghcr.io/devcontainers-extra/features/kind:1": {},
 		"ghcr.io/devcontainers/features/git:1": {
+		},
+		"ghcr.io/devcontainers/features/docker-in-docker:2": {
+			"moby": false
 		},
 		"ghcr.io/stuartleeks/dev-container-features/shell-history:0": {},
 		"ghcr.io/devcontainers-extra/features/zsh-plugins:0": {
 			"plugins": "git git-flow F-Sy-H zsh-autosuggestions zsh-completions",
 			"omzPlugins": "https://github.com/z-shell/F-Sy-H https://github.com/zsh-users/zsh-autosuggestions https://github.com/zsh-users/zsh-completions"
 		}
-	}
+		// ,"ghcr.io/devcontainers/features/kubectl-helm-minikube:1": {}
+	},
 
 	// Features to add to the dev container. More info: https://containers.dev/features.
 	// "features": {},
 
 	// Use 'forwardPorts' to make a list of ports inside the container available locally.
-	// "forwardPorts": [],
+	"forwardPorts": [
+		8080, // Airflow
+		8081, // Trino
+		9001, // MiniO
+		9999, // Kafka UI
+		5434  // Postgres
+	]
 
 	// Uncomment the next line if you want start specific services in your Docker Compose config.
 	//"runServices": ["web1", "web2", "db", "nginx", "phpmyadmin"]
